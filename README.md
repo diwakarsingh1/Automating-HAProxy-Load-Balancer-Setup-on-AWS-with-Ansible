@@ -81,15 +81,18 @@ Now write the following code for haproxy configuration.
 
 <h4> Explanation of above code. </h4>
 1. Frontend Configuration:
-    — Binds to port 8080 on all interfaces (`bind *:8080`).
-    — Sets a client timeout of 10 seconds (`timeout client 10s`).
-    — Routes incoming requests to the `webserver` backend (`default_backend webserver`).
+
+— Binds to port 8080 on all interfaces (`bind *:8080`).
+— Sets a client timeout of 10 seconds (`timeout client 10s`).
+— Routes incoming requests to the `webserver` backend (`default_backend webserver`).
+
 2. Backend Configuration:
-    — Defines the `webserver` backend.
-    — Uses round-robin load balancing (`balance roundrobin`).
-    — Sets a server timeout of 10 seconds (`timeout server 10s`).
-    — Sets a connection timeout of 10 seconds (`timeout connect 10s`).
+
+— Defines the `webserver` backend.
+— Uses round-robin load balancing (`balance roundrobin`).
+— Sets a server timeout of 10 seconds (`timeout server 10s`).
+— Sets a connection timeout of 10 seconds (`timeout connect 10s`).
 
 3. Server Configuration (Loop):
-    — Iterates over each server IP in the `WebServer` group.
-    — Configures a server entry for each IP, incrementally numbered (`server app{{ loop.index }} {{ ip }}:80`).
+— Iterates over each server IP in the `WebServer` group.
+— Configures a server entry for each IP, incrementally numbered (`server app{{ loop.index }} {{ ip }}:80`).
