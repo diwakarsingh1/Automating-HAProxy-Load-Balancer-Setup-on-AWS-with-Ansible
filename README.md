@@ -10,6 +10,6 @@ One instance for Ansible Controller. One for Load Balancer (Frontend). And rest 
 
 # Step 2: Allow the Frontend & Backend instances for ssh remote login.
 Set the root password with the help of:
-# code
+
     passwd root
 
