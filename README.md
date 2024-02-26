@@ -79,20 +79,67 @@ Now write the following code for haproxy configuration.
         server app{{ loop.index }} {{ ip }}:80
     {% endfor %}
 
-<h4> Explanation of above code. </h4>
-1. Frontend Configuration:
+<h2> Explanation of above code. </h2>
 
-— Binds to port 8080 on all interfaces (`bind *:8080`).
-— Sets a client timeout of 10 seconds (`timeout client 10s`).
-— Routes incoming requests to the `webserver` backend (`default_backend webserver`).
+<h3> 1. Frontend Configuration: </h3>
 
-2. Backend Configuration:
+- __Binds to port 8080 on all interfaces (`bind *:8080`).__
 
-— Defines the `webserver` backend.
-— Uses round-robin load balancing (`balance roundrobin`).
-— Sets a server timeout of 10 seconds (`timeout server 10s`).
-— Sets a connection timeout of 10 seconds (`timeout connect 10s`).
+- __Sets a client timeout of 10 seconds (`timeout client 10s`).__
+  
+- __Routes incoming requests to the `webserver` backend (`default_backend webserver`).__
 
-3. Server Configuration (Loop):
-— Iterates over each server IP in the `WebServer` group.
-— Configures a server entry for each IP, incrementally numbered (`server app{{ loop.index }} {{ ip }}:80`).
+<h3>  2. Backend Configuration: </h3>
+
+- __Defines the `webserver` backend.
+  
+- __Uses round-robin load balancing (`balance roundrobin`).__
+  
+- __Sets a server timeout of 10 seconds (`timeout server 10s`).__
+  
+- __Sets a connection timeout of 10 seconds (`timeout connect 10s`).__
+
+<h3>  3. Server Configuration (Loop): </h3>
+
+- __Iterates over each server IP in the `WebServer` group.__
+  
+- __Configures a server entry for each IP, incrementally numbered (`server app{{ loop.index }} {{ ip }}:80`).__
+
+Now create the file name __LB__ with extension ***[ .yml ]***. Using:
+
+    vim LB.yml
+
+And type the below code:
+
+    - hosts: LoadBalancer
+      tasks:
+        - name: Installing haproxy
+          package:
+            name: "haproxy"
+            state: present
+        - name: Registering Webserver TO LB
+          template:
+            src: "haproxy.j2"
+            dest: "/etc/haproxy/haproxy.cfg"
+
+        - name: Starting haproxy service
+          service:
+            name: "haproxy"
+            state: restarted
+
+
+<h2> Explanation of above code. </h2>
+
+<h3> 1. Installing HAProxy: </h3>
+
+- __Uses the Ansible `package` module to ensure HAProxy is present on the Load Balancer hosts.__
+
+<h3> 2. Registering Webserver to Load Balancer: </h3>
+
+- __Copies the HAProxy configuration template file (`haproxy.j2`) to `/etc/haproxy/haproxy.cfg` on the Load Balancer hosts.__
+
+<h3> 3. Starting HAProxy Service: </h3>
+
+- __Uses the Ansible `service` module to restart the HAProxy service on the Load Balancer hosts, applying the new configuration.__
+
+
