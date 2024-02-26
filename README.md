@@ -142,4 +142,88 @@ And type the below code:
 
 - __Uses the Ansible `service` module to restart the HAProxy service on the Load Balancer hosts, applying the new configuration.__
 
+Now run the LB.yml playbook using:
+
+    ansible-playbook LB.yml
+
+![](/ansible_automation/playbook.webp)
+
+# Step 5: Now set-up the Ansible Playbook for Backend instance.
+
+Create the file name index.php using:
+
+    vim index.php
+
+And paste the given php code.
+
+    <pre>
+    <?php
+      print_r($_SERVER);
+    ?>
+    </pre>
+
+This code is simple you will see the server side details its ip_address and all necessary server side details.
+
+![](/ansible_automation/sample-php.webp)
+
+Now create the playbook for configuring all the backend instances. Let says the file is web.yml
+
+    - hosts: WebServer
+      tasks:
+        - name: Installing HTTPD
+          package:
+            name: "httpd"
+            state: present
+
+        - name: Installing PHP
+          package:
+            name: "php"
+            state: present
+
+        - name: Copying Php file to default location
+          template:
+            src: "index.php"
+            dest: "/var/www/html"
+
+        - name: Starting HTTPD service
+          service:
+            name: "httpd"
+            state: started
+
+<h2> Explanation of above code. </h2>
+
+<h3> 1. Installing HTTPD: </h3>
+
+- __Uses the Ansible `package` module to ensure the Apache HTTP Server (`httpd`) is installed on the hosts in the WebServer group.__
+
+<h3> 2. Installing PHP: </h3>
+
+- __Uses the Ansible `package` module to ensure PHP is installed on the hosts in the WebServer group.__
+
+<h3> 3. Copying PHP file to default location: </h3>
+   
+- __Copies the `index.php` file to the `/var/www/html` directory on the hosts in the WebServer group using the Ansible `template` module.__
+
+<h3> 4. Starting HTTPD service: </h3>
+
+- __Uses the Ansible `service` module to start the Apache HTTP Server (`httpd`) service on the hosts in the WebServer group.__
+
+Now run the web.yml playbook using:
+
+    ansible-playbook web.yml
+
+Congratulation you have set-up HAProxy Load Balancer on AWS with Ansible.
+Now type the ip_address of your Frontend using port number that you have used in haproxy.j2 file.
+__ip_address:8080__
+
+Let me show you the example of frontend getting connected to different backend instances whenever client try to reach frontend IP.
+
+![](/ansible_automation/backend-1.webp)
+***Here it connected to [ 172.31.35.49 ] Backend.***
+
+![](/ansible_automation/backend-1.webp)
+***Here it connected to [ 172.31.47.91 ] Backend.***
+
+![](/ansible_automation/backend-1.webp)
+***Here it connected to [ 172.31.36.67 ] Backend***
 
