@@ -91,7 +91,7 @@ Now write the following code for haproxy configuration.
 
 <h3>  2. Backend Configuration: </h3>
 
-- __Defines the `webserver` backend.
+- __Defines the `webserver` backend.__
   
 - __Uses round-robin load balancing (`balance roundrobin`).__
   
